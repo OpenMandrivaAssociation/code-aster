@@ -122,7 +122,7 @@ tar zxf med-%{medver}.tar.gz
 %build
 pushd med-%{medver}
     CC=%__cc								\
-    %configure2_5x --disable-static --enable-shared
+    %configure2_5x --disable-static --enable-shared --with-hdf5=%{_prefix}
     %make
 popd
 
