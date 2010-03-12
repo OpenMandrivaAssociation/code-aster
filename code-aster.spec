@@ -121,8 +121,9 @@ tar zxf med-%{medver}.tar.gz
 #-----------------------------------------------------------------------
 %build
 pushd med-%{medver}
+    HDF5HOME=%{_prefix}							\
     CC=%__cc								\
-    %configure2_5x --disable-static --enable-shared --with-hdf5=%{_prefix}
+    %configure2_5x --disable-static --enable-shared
     %make
 popd
 
