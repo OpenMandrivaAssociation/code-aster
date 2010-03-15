@@ -19,6 +19,8 @@ BuildRequires:	hdf5-devel
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 
+Patch0:		med-build.patch
+
 #-----------------------------------------------------------------------
 %description
 Code_Aster: how and why?
@@ -118,12 +120,16 @@ these exchanges, it is necessary to develop code between gateways software.
 %setup -q -n aster-full-src-%{astver}/SRC
 tar zxf med-%{medver}.tar.gz
 
+%patch0 -p2
+pushd med-%{medver}
+    autoreconf -ifs
+popd
+
+
 #-----------------------------------------------------------------------
 %build
 pushd med-%{medver}
-    HDF5HOME=%{_prefix}							\
-    CC=%__cc								\
-    %configure2_5x --disable-static --enable-shared
+    %configure --disable-static --enable-shared
     %make
 popd
 
