@@ -159,7 +159,7 @@ Summary:	Partitioning unstructured graphs and meshes
 Group:		Development/Other
 License:	BSD like
 Version:	%{metisver}
-Provides:	metis-devel = %{metiver}-%{release}
+Provides:	metis-devel = %{metisver}-%{release}
 Provides:	libmetis-devel = %{metisver}-%{release}
 
 %description	-n %{metisdev}
