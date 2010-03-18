@@ -245,7 +245,7 @@ pushd scotch_%{scotver}/src
     perl -pi								\
 	-e 's|\?CC\?|%{__cc}|;'						\
 	-e 's|\?CFLAGS\?|%{optflags}|;'					\
-	-e 's|^LDFLAGS  = -L../../bin -lm|LDFLAGS = -L../../bin/-lm %{ldflags}|;'\
+	-e 's|^LDFLAGS  = -L../../bin -lm|LDFLAGS = -L../../bin/ -lm %{ldflags}|;'\
 	-e 's|\?RANLIB\?|ranlib|;'					\
 	-e 's|\?FLEX\?|flex|;'						\
 	-e 's|\?YACC\?|yacc|;'						\
