@@ -12,7 +12,7 @@
 Name:		code-aster
 Group:		Sciences/Physics
 Version:	%{astver}
-Release:	%mkrel 2
+Release:	%mkrel 3
 Summary:	Analysis of of mechanical and civil engineering structures
 Source0:	aster-full-src-10.1.0-4.noarch.tar.gz
 License:	GPL
@@ -235,7 +235,7 @@ popd
 pushd metis-%{metisver}
     perl -pi								\
 	-e 's|\?CC\?|%{__cc}|;'						\
-	-e 's|\?CFLAGS\?|%{optflags}|;'					\
+	-e 's|\?CFLAGS\?|%{optflags} -fPIC|;'				\
 	-e 's|\?LDFLAGS\?|%{ldflags}|;'					\
 	Makefile.in
     %make default
@@ -244,7 +244,7 @@ popd
 pushd scotch_%{scotver}/src
     perl -pi								\
 	-e 's|\?CC\?|%{__cc}|;'						\
-	-e 's|\?CFLAGS\?|%{optflags}|;'					\
+	-e 's|\?CFLAGS\?|%{optflags} -fPIC|;'				\
 	-e 's|^LDFLAGS  = -L../../bin -lm|LDFLAGS = -L../../bin/ -lm %{ldflags}|;'\
 	-e 's|\?RANLIB\?|ranlib|;'					\
 	-e 's|\?FLEX\?|flex|;'						\
