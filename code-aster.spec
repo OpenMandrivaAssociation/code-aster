@@ -12,7 +12,7 @@
 Name:		code-aster
 Group:		Sciences/Physics
 Version:	%{astver}
-Release:	%mkrel 4
+Release:	%mkrel 5
 Summary:	Analysis of of mechanical and civil engineering structures
 Source0:	aster-full-src-10.1.0-4.noarch.tar.gz
 License:	GPL
