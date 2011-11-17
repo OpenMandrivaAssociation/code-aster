@@ -1,20 +1,21 @@
-%define		astver	10.1.0
-%define		medver	2.3.6
+%define		astver	11.0.10
+%define		medver	3.0.3
 %define		medlib	%mklibname med 1
 %define		meddev	%mklibname med -d
 
-%define		metisver 4.0
+%define		metisver 4.0.3
 %define		metisdev %mklibname -d metis
 
-%define		scotver 4.0
+%define		scotver 5.1.11
 %define		scotdev	%mklibname scotch -d
+%define		scotsuf _esmumps
 
 Name:		code-aster
 Group:		Sciences/Physics
 Version:	%{astver}
-Release:	%mkrel 6
+Release:	1
 Summary:	Analysis of of mechanical and civil engineering structures
-Source0:	aster-full-src-10.1.0-4.noarch.tar.gz
+Source0:	http://www.code-aster.org/FICHIERS/aster-full-src-11.0.10-2.noarch.tar.gz
 License:	GPL
 URL:		http://www.code-aster.org/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -27,8 +28,7 @@ BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 
 Patch0:		med-build.patch
-Patch1:		metis-string-format.patch
-Patch2:		scotch-string-format.patch
+Patch1:		scotch-string-format.patch
 
 #-----------------------------------------------------------------------
 %description
@@ -215,11 +215,10 @@ partitioning, and sparse matrix block ordering of graphs and meshes.
 %setup -q -n aster-full-src-%{astver}/SRC
 tar zxf med-%{medver}.tar.gz
 tar zxf metis-%{metisver}.tar.gz
-tar zxf scotch-%{scotver}-1.tar.gz
+tar zxf scotch-%{scotver}%{scotsuf}-1.tar.gz
 
 %patch0 -p2
 %patch1 -p2
-%patch2 -p2
 pushd med-%{medver}
     autoreconf -ifs
 popd
@@ -228,24 +227,19 @@ popd
 #-----------------------------------------------------------------------
 %build
 pushd med-%{medver}
-    %configure --disable-static --enable-shared
+    %configure --disable-static --enable-shared --with-hdf5=%{_prefix}
     %make
 popd
 
 pushd metis-%{metisver}
-    perl -pi								\
-	-e 's|\?CC\?|%{__cc}|;'						\
-	-e 's|\?CFLAGS\?|%{optflags} -fPIC|;'				\
-	-e 's|\?LDFLAGS\?|%{ldflags}|;'					\
-	Makefile.in
     %make default
 popd
 
-pushd scotch_%{scotver}/src
+pushd scotch_%{scotver}%{scotsuf}/src
     perl -pi								\
 	-e 's|\?CC\?|%{__cc}|;'						\
-	-e 's|\?CFLAGS\?|%{optflags} -fPIC|;'				\
-	-e 's|^LDFLAGS  = -L../../bin -lm|LDFLAGS = -L../../bin/ -lm %{ldflags}|;'\
+	-e 's|\?CFLAGS\?|-pthread %{optflags}|;'			\
+	-e 's|^(LDFLAGS\s+=.*)|$1 %{ldflags}|;'				\
 	-e 's|\?RANLIB\?|ranlib|;'					\
 	-e 's|\?FLEX\?|flex|;'						\
 	-e 's|\?YACC\?|yacc|;'						\
@@ -254,16 +248,17 @@ pushd scotch_%{scotver}/src
 popd
 
 #-----------------------------------------------------------------------
-%clean
-rm -rf %{buildroot}
-
-#-----------------------------------------------------------------------
 %install
 pushd med-%{medver}
     %makeinstall_std							\
 	docdir=%{_docdir}/med						\
 	testcdir=%{_datadir}/med/bin/testc				\
-	testfdir=%{_datadir}/med/bin/testf
+	testfdir=%{_datadir}/med/bin/testf				\
+	usescasesdir=%{_datadir}/med/bin/usescases			\
+	unittestsdir=%{_datadir}/med/bin/unittests
+    pushd %{buildroot}%{_includedir}
+	mv -f 2.3.6 med-2.3.6
+    popd
 popd
 
 pushd metis-%{metisver}
@@ -278,19 +273,19 @@ pushd metis-%{metisver}
     cp -fa Doc/manual.ps %{buildroot}%{_docdir}/metis
 popd
 
-pushd scotch_%{scotver}
+pushd scotch_%{scotver}%{scotsuf}
     mkdir -p %{buildroot}%{_datadir}/scotch/bin				\
 	%{buildroot}%{_includedir}/scotch %{buildroot}%{_libdir}/scotch	\
 	%{buildroot}%{_docdir}/scotch
+    cp -fa lib/lib*.a %{buildroot}%{_libdir}/scotch
+    cp -f include/*.h %{buildroot}%{_includedir}/scotch
     pushd bin
-	cp -fa lib*.a %{buildroot}%{_libdir}/scotch
-	cp -f *.h %{buildroot}%{_includedir}/scotch
 	cp -f acpl atst gmk_m3 gtst mmk_m3 amk_ccc gmk_msh mord		\
 	    amk_fft2 gmk_ub2 mtst amk_grf gcv gmtst amk_hy gmap gord	\
 	    amk_m2 gmk_hy gotst mcv amk_p2 gmk_m2 gout mmk_m2		\
 	    %{buildroot}%{_datadir}/scotch/bin
     popd
-    cp -fa doc/scotch_user4.0.pdf %{buildroot}%{_docdir}/scotch
+    cp -fa doc/*.pdf %{buildroot}%{_docdir}/scotch
     cp -far tgt %{buildroot}%{_datadir}/scotch
 popd
 
