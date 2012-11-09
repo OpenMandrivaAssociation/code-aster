@@ -1,0 +1,44 @@
+--- aster-full-src-11.0.10/SRC/med-3.0.3/config/med_check_hdf5.m4.orig	2011-11-16 16:54:55.210051606 -0200
++++ aster-full-src-11.0.10/SRC/med-3.0.3/config/med_check_hdf5.m4	2011-11-16 17:01:06.682214293 -0200
+@@ -26,6 +26,12 @@ AC_ARG_WITH([hdf5],
+ 	    [],
+ 	    [withval=yes])
+ 
++if uname -m | grep 64; then
++  LIB_LOCATION_SUFFIX="64"
++else
++  LIB_LOCATION_SUFFIX=""
++fi
++
+ if test ! "x$withval" = "xno"
+ then
+ 
+@@ -38,8 +44,8 @@ then
+          AC_MSG_ERROR([The directory |$hdf5home| doesn't exist, please verify either HDF5HOME or --with-hdf5=<path>])
+        fi
+ 
+-       if test ! -d "$hdf5home/lib" ; then
+-         AC_MSG_ERROR([The directory |$hdf5home/lib| doesn't exist, please verify either HDF5HOME or --with-hdf5=<path>])
++       if test ! -d "$hdf5home/lib${LIB_LOCATION_SUFFIX}" ; then
++         AC_MSG_ERROR([The directory |$hdf5home/lib${LIB_LOCATION_SUFFIX}| doesn't exist, please verify either HDF5HOME or --with-hdf5=<path>])
+        fi
+ 
+        if test ! -d "$hdf5home/include" ; then
+@@ -50,7 +56,7 @@ then
+        LIBS_save="$LIBS"
+        CPPFLAGS_save="$CPPFLAGS"
+ 
+-       LDFLAGS="-L$hdf5home/lib $LDFLAGS"
++       LDFLAGS="-L$hdf5home/lib${LIB_LOCATION_SUFFIX} $LDFLAGS"
+        CPPFLAGS="-I$hdf5home/include $CPPFLAGS "
+       fi
+ 
+@@ -92,7 +98,7 @@ dnl          AC_MSG_WARN([BE CAREFUL, we
+ dnl        fi
+ 
+         HDF5_CPPFLAGS="$HDF5_CPPFLAGS -I$hdf5home/include"
+-        HDF5_LDFLAGS="-L$hdf5home/lib"
++        HDF5_LDFLAGS="-L$hdf5home/lib${LIB_LOCATION_SUFFIX}"
+         LDFLAGS="$LDFLAGS_save"
+         CPPFLAGS="$CPPFLAGS_save"
+         LIBS="$LIBS_save"

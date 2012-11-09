@@ -1,0 +1,22 @@
+--- aster-full-src-11.0.10/SRC/scotch_5.1.11_esmumps/src/libscotch/parser.c.orig	2011-11-16 17:13:56.454087764 -0200
++++ aster-full-src-11.0.10/SRC/scotch_5.1.11_esmumps/src/libscotch/parser.c	2011-11-16 17:14:36.948201010 -0200
+@@ -590,15 +590,15 @@ FILE * const                stream)
+     case STRATTESTMUL :                           /* Multiplication operator */
+     case STRATTESTMOD :                           /* Modulus operator        */
+       i = (test->data.test[0]->typetest < test->typetest) ? 1 : 0;
+-      fprintf (stream, strattestsavepa[i][0]);
++      fprintf (stream, "%s", strattestsavepa[i][0]);
+       o = stratTestSave (test->data.test[0], stream);
+-      fprintf (stream, strattestsavepa[i][1]);
++      fprintf (stream, "%s", strattestsavepa[i][1]);
+       if (o == 0) {
+         fprintf (stream, "%c", strattestsaveop[test->typetest]);
+         i = (test->data.test[1]->typetest < test->typetest) ? 1 : 0;
+-        fprintf (stream, strattestsavepa[i][0]);
++        fprintf (stream, "%s", strattestsavepa[i][0]);
+         stratTestSave (test->data.test[1], stream);
+-        fprintf (stream, strattestsavepa[i][1]);
++        fprintf (stream, "%s", strattestsavepa[i][1]);
+       }
+       break;
+     case STRATTESTVAL :                           /* Constant value */
