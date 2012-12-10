@@ -18,7 +18,7 @@ Summary:	Analysis of of mechanical and civil engineering structures
 Source0:	http://www.code-aster.org/FICHIERS/aster-full-src-11.0.10-2.noarch.tar.gz
 License:	GPL
 URL:		http://www.code-aster.org/
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+
 
 BuildRequires:	flex bison
 BuildRequires:	gcc-gfortran
@@ -80,7 +80,6 @@ simulation work by different scientific computing software. To achieve
 these exchanges, it is necessary to develop code between gateways software.
 
 %files		-n med
-%defattr(-,root,root)
 %{_bindir}/mdump
 %{_bindir}/medconforme
 %{_bindir}/medimport
@@ -103,7 +102,6 @@ simulation work by different scientific computing software. To achieve
 these exchanges, it is necessary to develop code between gateways software.
 
 %files		-n %{medlib}
-%defattr(-,root,root)
 %{_libdir}/*.so.*
 
 #-----------------------------------------------------------------------
@@ -121,10 +119,8 @@ simulation work by different scientific computing software. To achieve
 these exchanges, it is necessary to develop code between gateways software.
 
 %files		-n %{meddev}
-%defattr(-,root,root)
 %{_includedir}/MED*
 %{_includedir}/med*
-%{_libdir}/*.la
 %{_libdir}/*.so
 %{_libdir}/*.settings
 
@@ -141,7 +137,6 @@ METIS is a software package for partitioning unstructured graphs, partitioning
 meshes, and computing fill-reducing orderings of sparse matrices. 
 
 %files		-n metis
-%defattr(-,root,root)
 %{_bindir}/graphchk
 %{_bindir}/kmetis
 %{_bindir}/mesh2dual
@@ -167,7 +162,6 @@ METIS is a software package for partitioning unstructured graphs, partitioning
 meshes, and computing fill-reducing orderings of sparse matrices. 
 
 %files		-n %{metisdev}
-%defattr(-,root,root)
 %{_includedir}/metis.h
 %dir %{_includedir}/metis
 %{_includedir}/metis/*
@@ -185,7 +179,6 @@ A software package and a software library devoted to static mapping,
 partitioning, and sparse matrix block ordering of graphs and meshes.
 
 %files		-n scotch
-%defattr(-,root,root)
 %dir %{_datadir}/scotch
 %{_datadir}/scotch/*
 %dir %{_docdir}/scotch
@@ -205,7 +198,6 @@ A software package and a software library devoted to static mapping,
 partitioning, and sparse matrix block ordering of graphs and meshes.
 
 %files		-n %{scotdev}
-%defattr(-,root,root)
 %dir %{_includedir}/scotch
 %{_includedir}/scotch/*
 %{_libdir}/scotch/*.a
@@ -290,3 +282,5 @@ pushd scotch_%{scotver}%{scotsuf}
 popd
 
 chmod -R a+r %{buildroot}
+
+
