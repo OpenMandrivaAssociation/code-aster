@@ -103,7 +103,6 @@ these exchanges, it is necessary to develop code between gateways software.
 Summary:	Data exchanges in multi-physics simulation work
 Group:		Development/Other
 Version:	%{medver}
-Requires:	%{medlib} = %{medver}-%{release}
 
 %description	-n %{medlib}
 Data exchanges have become a necessity in the studies of multi-physics
