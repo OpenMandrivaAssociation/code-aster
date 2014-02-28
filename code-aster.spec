@@ -26,6 +26,7 @@ BuildRequires:	hdf5
 BuildRequires:	hdf5-devel
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
+BuildRequires:	pkgconfig(python2)
 
 Patch0:		med-build.patch
 Patch1:		scotch-string-format.patch
@@ -81,10 +82,10 @@ simulation work by different scientific computing software. To achieve
 these exchanges, it is necessary to develop code between gateways software.
 
 %files		-n med
-%{_bindir}/mdump
+%{_bindir}/mdump*
 %{_bindir}/medconforme
 %{_bindir}/medimport
-%{_bindir}/xmdump
+%{_bindir}/xmdump*
 %dir %{_datadir}/med
 %{_datadir}/med/*
 %dir %{_docdir}/med
@@ -103,7 +104,7 @@ simulation work by different scientific computing software. To achieve
 these exchanges, it is necessary to develop code between gateways software.
 
 %files		-n %{medlib}
-%{_libdir}/*.so.*
+%{_libdir}/libmed.so.*
 
 #-----------------------------------------------------------------------
 %package	-n %{meddev}
@@ -122,9 +123,16 @@ these exchanges, it is necessary to develop code between gateways software.
 %files		-n %{meddev}
 %{_includedir}/MED*
 %{_includedir}/med*
-%{_libdir}/*.so
-%{_libdir}/*.settings
+%{_includedir}/swig/*
+%{_libdir}/libmed*.so
+%{_libdir}/libmed*.settings
 
+%package -n	python-med
+Summary:	Python bindings for med
+Group:		Development/Python
+
+%files -n	python-med
+%{python_sitearch}/med
 
 #-----------------------------------------------------------------------
 %package	-n scotch
@@ -230,3 +238,6 @@ chmod -R a+r %{buildroot}
 # Symlink points to BuildRoot: /usr/bin/mdump
 ln -sf mdump3 %{buildroot}%{_bindir}/mdump
 ln -sf xmdump3 %{buildroot}%{_bindir}/xmdump
+
+rm -r %{buildroot}%{_bindir}/testpy
+
