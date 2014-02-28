@@ -1,21 +1,21 @@
-%define		astver	11.0.10
-%define		medver	3.0.3
+%define		astver	11.5.0
+%define		astmin	-3
+
+%define		medver	3.0.7
 %define		medlib	%mklibname med 1
 %define		meddev	%mklibname med -d
-
-%define		metisver 4.0.3
-%define		metisdev %mklibname -d metis
 
 %define		scotver 5.1.11
 %define		scotdev	%mklibname scotch -d
 %define		scotsuf _esmumps
+%define		scotmin	-2
 
 Name:		code-aster
 Group:		Sciences/Physics
 Version:	%{astver}
 Release:	1
 Summary:	Analysis of of mechanical and civil engineering structures
-Source0:	http://www.code-aster.org/FICHIERS/aster-full-src-11.0.10-2.noarch.tar.gz
+Source0:	http://www.code-aster.org/FICHIERS/aster-full-src-%{astver}%{astmin}.noarch.tar.gz
 License:	GPL
 URL:		http://www.code-aster.org/
 
@@ -29,6 +29,7 @@ BuildRequires:	tk-devel
 
 Patch0:		med-build.patch
 Patch1:		scotch-string-format.patch
+Patch2:		med-3.0.7-link-against-python27.patch
 
 #-----------------------------------------------------------------------
 %description
@@ -126,48 +127,6 @@ these exchanges, it is necessary to develop code between gateways software.
 
 
 #-----------------------------------------------------------------------
-%package	-n metis
-Summary:	Partitioning unstructured graphs and meshes
-Group:		Development/Other
-License:	BSD like
-Version:	%{metisver}
-
-%description	-n metis
-METIS is a software package for partitioning unstructured graphs, partitioning 
-meshes, and computing fill-reducing orderings of sparse matrices. 
-
-%files		-n metis
-%{_bindir}/graphchk
-%{_bindir}/kmetis
-%{_bindir}/mesh2dual
-%{_bindir}/mesh2nodal
-%{_bindir}/oemetis
-%{_bindir}/onmetis
-%{_bindir}/partdmesh
-%{_bindir}/partnmesh
-%{_bindir}/pmetis
-%{_docdir}/metis/manual.ps
-
-#-----------------------------------------------------------------------
-%package	-n %{metisdev}
-Summary:	Partitioning unstructured graphs and meshes
-Group:		Development/Other
-License:	BSD like
-Version:	%{metisver}
-Provides:	metis-devel = %{metisver}-%{release}
-Provides:	libmetis-devel = %{metisver}-%{release}
-
-%description	-n %{metisdev}
-METIS is a software package for partitioning unstructured graphs, partitioning 
-meshes, and computing fill-reducing orderings of sparse matrices. 
-
-%files		-n %{metisdev}
-%{_includedir}/metis.h
-%dir %{_includedir}/metis
-%{_includedir}/metis/*
-%{_libdir}/libmetis.a
-
-#-----------------------------------------------------------------------
 %package	-n scotch
 Summary:	Mapping, partitioning, and sparse matrix block ordering
 Group:		Development/Other
@@ -206,11 +165,12 @@ partitioning, and sparse matrix block ordering of graphs and meshes.
 %prep
 %setup -q -n aster-full-src-%{astver}/SRC
 tar zxf med-%{medver}.tar.gz
-tar zxf metis-%{metisver}.tar.gz
-tar zxf scotch-%{scotver}%{scotsuf}-1.tar.gz
+tar zxf scotch-%{scotver}%{scotsuf}%{scotmin}.tar.gz
 
 %patch0 -p2
 %patch1 -p2
+%patch2 -p2
+
 pushd med-%{medver}
     autoreconf -ifs
 popd
@@ -219,15 +179,11 @@ popd
 #-----------------------------------------------------------------------
 %build
 pushd med-%{medver}
-    %configure --disable-static --enable-shared --with-hdf5=%{_prefix}
+    %configure --disable-static --enable-shared --with-hdf5=%{_prefix} FLIBS=-lgfortran
     %make
 popd
 
-pushd metis-%{metisver}
-    %make default
-popd
-
-pushd scotch_%{scotver}%{scotsuf}/src
+pushd scotch-%{scotver}%{scotsuf}/src
     perl -pi								\
 	-e 's|\?CC\?|%{__cc}|;'						\
 	-e 's|\?CFLAGS\?|-pthread %{optflags}|;'			\
@@ -253,19 +209,7 @@ pushd med-%{medver}
     popd
 popd
 
-pushd metis-%{metisver}
-    mkdir -p %{buildroot}%{_bindir} %{buildroot}%{_includedir}/metis	\
-	%{buildroot}%{_libdir}  %{buildroot}%{_docdir}/metis
-    cp -fa graphchk kmetis mesh2dual mesh2nodal oemetis onmetis		\
-	partdmesh partnmesh pmetis %{buildroot}%{_bindir}
-    cp -fa libmetis.a %{buildroot}%{_libdir}
-    cp -fa Lib/metis.h %{buildroot}%{_includedir}
-    cp -fa Lib/{defs,struct,macros,rename,proto}.h			\
-	%{buildroot}%{_includedir}/metis
-    cp -fa Doc/manual.ps %{buildroot}%{_docdir}/metis
-popd
-
-pushd scotch_%{scotver}%{scotsuf}
+pushd scotch-%{scotver}%{scotsuf}
     mkdir -p %{buildroot}%{_datadir}/scotch/bin				\
 	%{buildroot}%{_includedir}/scotch %{buildroot}%{_libdir}/scotch	\
 	%{buildroot}%{_docdir}/scotch
@@ -283,4 +227,6 @@ popd
 
 chmod -R a+r %{buildroot}
 
-
+# Symlink points to BuildRoot: /usr/bin/mdump
+ln -sf mdump3 %{buildroot}%{_bindir}/mdump
+ln -sf xmdump3 %{buildroot}%{_bindir}/xmdump

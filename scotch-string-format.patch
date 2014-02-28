@@ -1,5 +1,5 @@
---- aster-full-src-11.0.10/SRC/scotch_5.1.11_esmumps/src/libscotch/parser.c.orig	2011-11-16 17:13:56.454087764 -0200
-+++ aster-full-src-11.0.10/SRC/scotch_5.1.11_esmumps/src/libscotch/parser.c	2011-11-16 17:14:36.948201010 -0200
+--- aster-full-src-11.5.0/SRC/scotch-5.1.11_esmumps/src/libscotch/parser.c.strfmt~	2014-02-28 04:53:05.198857425 +0100
++++ aster-full-src-11.5.0/SRC/scotch-5.1.11_esmumps/src/libscotch/parser.c	2014-02-28 04:53:11.148857541 +0100
 @@ -590,15 +590,15 @@ FILE * const                stream)
      case STRATTESTMUL :                           /* Multiplication operator */
      case STRATTESTMOD :                           /* Modulus operator        */
