@@ -2,8 +2,15 @@
 %define		astmin	-3
 
 %define		medver	3.0.7
-%define		medlib	%mklibname med 1
+%define		mlmaj	1
+%define		medlib	%mklibname med %{mlmaj}
 %define		meddev	%mklibname med -d
+
+%define		mlCmaj	1
+%define		medlibC	%mklibname medlibC %{mlCmaj}
+
+%define		mlimaj	0
+%define		medlibi	%mklibname medlibimport %{mlimaj}
 
 %define		scotver 5.1.11
 %define		scotdev	%mklibname scotch -d
@@ -104,7 +111,36 @@ simulation work by different scientific computing software. To achieve
 these exchanges, it is necessary to develop code between gateways software.
 
 %files		-n %{medlib}
-%{_libdir}/libmed.so.*
+%{_libdir}/libmed.so.%{mlmaj}*
+
+#-----------------------------------------------------------------------
+%package -n	%{medlibC}
+Summary:	Data exchanges in multi-physics simulation work
+Group:		Development/Other
+Version:	%{medver}
+
+%description -n	%{medlibC}
+Data exchanges have become a necessity in the studies of multi-physics
+simulation work by different scientific computing software. To achieve
+these exchanges, it is necessary to develop code between gateways software.
+
+%files -n	%{medlibC}
+%{_libdir}/libmedC.so.%{mlCmaj}*
+
+#-----------------------------------------------------------------------
+%package	-n %{medlibi}
+Summary:	Data exchanges in multi-physics simulation work
+Group:		Development/Other
+Version:	%{medver}
+
+%description	-n %{medlibi}
+Data exchanges have become a necessity in the studies of multi-physics
+simulation work by different scientific computing software. To achieve
+these exchanges, it is necessary to develop code between gateways software.
+
+%files		-n %{medlibi}
+%{_libdir}/libmedimport.so.%{mlimaj}*
+
 
 #-----------------------------------------------------------------------
 %package	-n %{meddev}
