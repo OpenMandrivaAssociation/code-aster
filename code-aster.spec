@@ -20,7 +20,7 @@
 Name:		code-aster
 Group:		Sciences/Physics
 Version:	%{astver}
-Release:	1
+Release:	2
 Summary:	Analysis of of mechanical and civil engineering structures
 Source0:	http://www.code-aster.org/FICHIERS/aster-full-src-%{astver}%{astmin}.noarch.tar.gz
 License:	GPL
