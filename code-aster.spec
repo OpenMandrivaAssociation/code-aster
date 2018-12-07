@@ -1,7 +1,9 @@
-%define		astver	11.5.0
-%define		astmin	-3
+%define		hdfver	1.8.14
 
-%define		medver	3.0.7
+%define		astver	13.6.0
+%define		astmin	-1
+
+%define		medver	3.3.1
 %define		mlmaj	1
 %define		medlib	%mklibname med %{mlmaj}
 %define		meddev	%mklibname med -d
@@ -12,10 +14,10 @@
 %define		mlimaj	0
 %define		medlibi	%mklibname medlibimport %{mlimaj}
 
-%define		scotver 5.1.11
+%define		scotver 6.0.4
 %define		scotdev	%mklibname scotch -d
-%define		scotsuf _esmumps
-%define		scotmin	-2
+%define		scotsuf -aster
+%define		scotmin	5
 
 Name:		code-aster
 Group:		Sciences/Physics
@@ -23,6 +25,7 @@ Version:	%{astver}
 Release:	2
 Summary:	Analysis of of mechanical and civil engineering structures
 Source0:	http://www.code-aster.org/FICHIERS/aster-full-src-%{astver}%{astmin}.noarch.tar.gz
+Patch1:		med-3.3.1_cmake.patch
 License:	GPL
 URL:		http://www.code-aster.org/
 
@@ -33,11 +36,7 @@ BuildRequires:	hdf5
 BuildRequires:	hdf5-devel
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
-BuildRequires:	pkgconfig(python2)
-
-Patch0:		med-build.patch
-Patch1:		scotch-string-format.patch
-Patch2:		med-3.0.7-link-against-python27.patch
+BuildRequires:	pkgconfig(python3)
 
 #-----------------------------------------------------------------------
 %description
@@ -93,10 +92,6 @@ these exchanges, it is necessary to develop code between gateways software.
 %{_bindir}/medconforme
 %{_bindir}/medimport
 %{_bindir}/xmdump*
-%dir %{_datadir}/med
-%{_datadir}/med/*
-%dir %{_docdir}/med
-%{_docdir}/med/*
 
 #-----------------------------------------------------------------------
 %package	-n %{medlib}
@@ -147,7 +142,6 @@ Summary:	Data exchanges in multi-physics simulation work
 Group:		Development/Other
 Version:	%{medver}
 Provides:	med-devel = %{medver}-%{release}
-Provides:	libmed-devel = %{medver}-%{release}
 Requires:	%{medlib} = %{medver}-%{release}
 
 %description	-n %{meddev}
@@ -156,15 +150,15 @@ simulation work by different scientific computing software. To achieve
 these exchanges, it is necessary to develop code between gateways software.
 
 %files		-n %{meddev}
-%{_includedir}/MED*
 %{_includedir}/med*
-%{_includedir}/swig/*
 %{_libdir}/libmed*.so
-%{_libdir}/libmed*.settings
+%{_libdir}/libmedfwrap.a
+%{_libdir}/cmake/MEDFile
 
 %package -n	python-med
 Summary:	Python bindings for med
 Group:		Development/Python
+Version:	%{medver}
 
 %files -n	python-med
 %{python_sitearch}/med
@@ -183,8 +177,6 @@ partitioning, and sparse matrix block ordering of graphs and meshes.
 %files		-n scotch
 %dir %{_datadir}/scotch
 %{_datadir}/scotch/*
-%dir %{_docdir}/scotch
-%{_docdir}/scotch/*
 
 #-----------------------------------------------------------------------
 %package	-n %{scotdev}
@@ -207,26 +199,49 @@ partitioning, and sparse matrix block ordering of graphs and meshes.
 #-----------------------------------------------------------------------
 %prep
 %setup -q -n aster-full-src-%{astver}/SRC
+tar zxf hdf5-%{hdfver}.tar.gz
 tar zxf med-%{medver}.tar.gz
 tar zxf scotch-%{scotver}%{scotsuf}%{scotmin}.tar.gz
 
-%patch0 -p2
-%patch1 -p2
-%patch2 -p2
-
 pushd med-%{medver}
-    autoreconf -ifs
+%patch1 -p1
 popd
-
 
 #-----------------------------------------------------------------------
 %build
+export CC=gcc
+export CXX=g++
+
+pushd hdf5-%{hdfver}
+   %cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON -DCMAKE_INSTALL_PREFIX=../../hdf5
+   %make 
+   %makeinstall
+popd
+
 pushd med-%{medver}
-    %configure --disable-static --enable-shared --with-hdf5=%{_prefix} FLIBS=-lgfortran
+libmedCRA=`grep -E "libmed_la_LDFLAGS.*version-info\s+([0-9]+:[0-9]+:[0-9]+)" src/Makefile.am | grep -Eo "[0-9]+:[0-9]+:[0-9]+"`
+libmedSOVER=`echo $libmedCRA | awk -F':' '{print $1-$3}'`
+libmedLIBVER=`echo $libmedCRA | awk -F':' '{print $1-$3"."$3"."$2}'`
+libmedcCRA=`grep -E "libmedC_la_LDFLAGS.*version-info\s+([0-9]+:[0-9]+:[0-9]+)" src/Makefile.am | grep -Eo "[0-9]+:[0-9]+:[0-9]+"`
+libmedcSOVER=`echo $libmedcCRA | awk -F':' '{print $1-$3}'`
+libmedcLIBVER=`echo $libmedcCRA | awk -F':' '{print $1-$3"."$3"."$2}'`
+libmedimportCRA=`grep -E "libmedimport_la_LDFLAGS.*version-info\s+([0-9]+:[0-9]+:[0-9]+)" tools/medimport/Makefile.am | grep -Eo "[0-9]+:[0-9]+:[0-9]+"`
+libmedimportSOVER=`echo $libmedimportCRA | awk -F':' '{print $1-$3}'`
+libmedimportLIBVER=`echo $libmedimportCRA | awk -F':' '{print $1-$3"."$3"."$2}'`
+
+    %cmake -DHDF5_ROOT_DIR=$RPM_BUILD_DIR/aster-full-src-13.6.0/SRC/hdf5 \
+    -DMEDFILE_BUILD_PYTHON=1 \
+    -DPYTHON_EXECUTABLE=%{__python3} \
+    -DPYTHON_INCLUDE_DIR=%{_includedir}/python%{python3_version}m/ \
+    -DPYTHON_LIBRARY=%{_libdir}/libpython%{python3_version}m.so \
+    -DLIBMED_SOVER=$libmedSOVER -DLIBMED_LIBVER=$libmedLIBVER \
+    -DLIBMEDC_SOVER=$libmedcSOVER -DLIBMEDC_LIBVER=$libmedcLIBVER \
+    -DLIBMEDIMPORT_SOVER=$libmedimportSOVER -DLIBMEDIMPORT_LIBVER=$libmedimportLIBVER
+
     %make
 popd
 
-pushd scotch-%{scotver}%{scotsuf}/src
+pushd scotch-%{scotver}/src
     perl -pi								\
 	-e 's|\?CC\?|%{__cc}|;'						\
 	-e 's|\?CFLAGS\?|-pthread %{optflags}|;'			\
@@ -240,19 +255,11 @@ popd
 
 #-----------------------------------------------------------------------
 %install
-pushd med-%{medver}
-    %makeinstall_std							\
-	docdir=%{_docdir}/med						\
-	testcdir=%{_datadir}/med/bin/testc				\
-	testfdir=%{_datadir}/med/bin/testf				\
-	usescasesdir=%{_datadir}/med/bin/usescases			\
-	unittestsdir=%{_datadir}/med/bin/unittests
-    pushd %{buildroot}%{_includedir}
-	mv -f 2.3.6 med-2.3.6
-    popd
+pushd med-%{medver}/build
+    %makeinstall_std							
 popd
 
-pushd scotch-%{scotver}%{scotsuf}
+pushd scotch-%{scotver}
     mkdir -p %{buildroot}%{_datadir}/scotch/bin				\
 	%{buildroot}%{_includedir}/scotch %{buildroot}%{_libdir}/scotch	\
 	%{buildroot}%{_docdir}/scotch
@@ -268,11 +275,18 @@ pushd scotch-%{scotver}%{scotsuf}
     cp -far tgt %{buildroot}%{_datadir}/scotch
 popd
 
+# Install docs through %%doc
+mkdir installed_docs
+mv %{buildroot}%{_docdir}/* installed_docs
+
+# Remove test-suite files
+rm -rf %{buildroot}%{_bindir}/testc
+rm -rf %{buildroot}%{_bindir}/testf
+rm -rf %{buildroot}%{_bindir}/testpy
+
 chmod -R a+r %{buildroot}
 
 # Symlink points to BuildRoot: /usr/bin/mdump
 ln -sf mdump3 %{buildroot}%{_bindir}/mdump
 ln -sf xmdump3 %{buildroot}%{_bindir}/xmdump
-
-rm -r %{buildroot}%{_bindir}/testpy
 
