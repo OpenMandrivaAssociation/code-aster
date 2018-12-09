@@ -161,6 +161,11 @@ Summary:	Python bindings for med
 Group:		Development/Python
 Version:	%{medver}
 
+%description	-n python-med
+Data exchanges have become a necessity in the studies of multi-physics
+simulation work by different scientific computing software. To achieve
+these exchanges, it is necessary to develop code between gateways software.
+
 %files -n	python-med
 %{python_sitearch}/med
 
