@@ -37,6 +37,7 @@ BuildRequires:	gcc-gfortran
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 BuildRequires:	pkgconfig(python3)
+BuildRequires:	swig
 
 #-----------------------------------------------------------------------
 %description
