@@ -30,7 +30,9 @@ License:	GPL
 URL:		http://www.code-aster.org/
 
 
-BuildRequires:	flex bison
+BuildRequires:	cmake
+BuildRequires:	flex
+BuildRequires:	bison
 BuildRequires:	gcc-gfortran
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
