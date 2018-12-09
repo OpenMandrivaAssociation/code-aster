@@ -32,8 +32,6 @@ URL:		http://www.code-aster.org/
 
 BuildRequires:	flex bison
 BuildRequires:	gcc-gfortran
-BuildRequires:	hdf5
-BuildRequires:	hdf5-devel
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 BuildRequires:	pkgconfig(python3)
