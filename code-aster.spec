@@ -22,7 +22,7 @@
 Name:		code-aster
 Group:		Sciences/Physics
 Version:	%{astver}
-Release:	2
+Release:	3
 Summary:	Analysis of of mechanical and civil engineering structures
 Source0:	http://www.code-aster.org/FICHIERS/aster-full-src-%{astver}%{astmin}.noarch.tar.gz
 Patch1:		med-3.3.1_cmake.patch
@@ -144,6 +144,8 @@ Group:		Development/Other
 Version:	%{medver}
 Provides:	med-devel = %{medver}-%{release}
 Requires:	%{medlib} = %{medver}-%{release}
+Requires:	%{medlibi} = %{medver}-%{release}
+Requires:	%{medlibC} = %{medver}-%{release}
 
 %description	-n %{meddev}
 Data exchanges have become a necessity in the studies of multi-physics
