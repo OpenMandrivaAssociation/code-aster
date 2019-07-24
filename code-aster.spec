@@ -21,8 +21,8 @@
 
 Name:		code-aster
 Group:		Sciences/Physics
-Version:	%{astver}
-Release:	3
+Version:	13.6.0
+Release:	1
 Summary:	Analysis of of mechanical and civil engineering structures
 Source0:	http://www.code-aster.org/FICHIERS/aster-full-src-%{astver}%{astmin}.noarch.tar.gz
 Patch1:		med-3.3.1_cmake.patch
@@ -81,7 +81,7 @@ are built independently from the elements formulation).
 %package	-n med
 Summary:	Data exchanges in multi-physics simulation work
 Group:		System/Libraries
-Version:	%{medver}
+Version:	13.6.0
 
 %description	-n med
 Data exchanges have become a necessity in the studies of multi-physics
@@ -98,7 +98,7 @@ these exchanges, it is necessary to develop code between gateways software.
 %package	-n %{medlib}
 Summary:	Data exchanges in multi-physics simulation work
 Group:		Development/Other
-Version:	%{medver}
+Version:	13.6.0
 
 %description	-n %{medlib}
 Data exchanges have become a necessity in the studies of multi-physics
@@ -112,7 +112,7 @@ these exchanges, it is necessary to develop code between gateways software.
 %package -n	%{medlibC}
 Summary:	Data exchanges in multi-physics simulation work
 Group:		Development/Other
-Version:	%{medver}
+Version:	13.6.0
 
 %description -n	%{medlibC}
 Data exchanges have become a necessity in the studies of multi-physics
@@ -126,7 +126,7 @@ these exchanges, it is necessary to develop code between gateways software.
 %package	-n %{medlibi}
 Summary:	Data exchanges in multi-physics simulation work
 Group:		Development/Other
-Version:	%{medver}
+Version:	13.6.0
 
 %description	-n %{medlibi}
 Data exchanges have become a necessity in the studies of multi-physics
@@ -141,7 +141,7 @@ these exchanges, it is necessary to develop code between gateways software.
 %package	-n %{meddev}
 Summary:	Data exchanges in multi-physics simulation work
 Group:		Development/Other
-Version:	%{medver}
+Version:	13.6.0
 Provides:	med-devel = %{medver}-%{release}
 Requires:	%{medlib} = %{medver}-%{release}
 Requires:	%{medlibi} = %{medver}-%{release}
@@ -161,7 +161,7 @@ these exchanges, it is necessary to develop code between gateways software.
 %package -n	python-med
 Summary:	Python bindings for med
 Group:		Development/Python
-Version:	%{medver}
+Version:	13.6.0
 
 %description	-n python-med
 Data exchanges have become a necessity in the studies of multi-physics
@@ -176,7 +176,7 @@ these exchanges, it is necessary to develop code between gateways software.
 Summary:	Mapping, partitioning, and sparse matrix block ordering
 Group:		Development/Other
 License:	LGPL
-Version:	%{scotver}
+Version:	13.6.0
 
 %description	-n scotch
 A software package and a software library devoted to static mapping,
@@ -191,7 +191,7 @@ partitioning, and sparse matrix block ordering of graphs and meshes.
 Summary:	Mapping, partitioning, and sparse matrix block ordering
 Group:		Development/Other
 License:	LGPL
-Version:	%{scotver}
+Version:	13.6.0
 Provides:	scotch-devel = %{scotver}-%{release}
 Provides:	libscotch-devel = %{scotver}-%{release}
 
