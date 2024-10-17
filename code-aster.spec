@@ -27,7 +27,7 @@ Summary:	Analysis of of mechanical and civil engineering structures
 Source0:	http://www.code-aster.org/FICHIERS/aster-full-src-%{astver}%{astmin}.noarch.tar.gz
 Patch1:		med-3.3.1_cmake.patch
 License:	GPL
-URL:		http://www.code-aster.org/
+URL:		https://www.code-aster.org/
 
 
 BuildRequires:	cmake
